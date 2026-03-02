@@ -1,24 +1,23 @@
-<<<<<<< HEAD
 services:
   db:
-    restart: unless-stopped
     image: postgres:16
     environment:
       POSTGRES_USER: coreops
       POSTGRES_PASSWORD: coreops
       POSTGRES_DB: coreops
+    ports:
+      - "5432:5432"
     volumes:
       - coreops_db:/var/lib/postgresql/data
 
   redis:
-    restart: unless-stopped
     image: redis:7
-
+    ports:
+      - "6379:6379"
 
   api:
-    restart: unless-stopped
     build: .
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     env_file:
       - .env
     depends_on:
@@ -30,9 +29,8 @@ services:
       - .:/code
 
   worker:
-    restart: unless-stopped
     build: .
-    command: celery -A app.workers.celery_app.celery worker --loglevel=INFO
+    command: celery -A app.worker.celery:celery worker --loglevel=INFO
     env_file:
       - .env
     depends_on:
@@ -42,49 +40,4 @@ services:
       - .:/code
 
 volumes:
-=======
-services:
-  db:
-    restart: unless-stopped
-    image: postgres:16
-    environment:
-      POSTGRES_USER: coreops
-      POSTGRES_PASSWORD: coreops
-      POSTGRES_DB: coreops
-    volumes:
-      - coreops_db:/var/lib/postgresql/data
-
-  redis:
-    restart: unless-stopped
-    image: redis:7
-
-
-  api:
-    restart: unless-stopped
-    build: .
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
-    env_file:
-      - .env
-    depends_on:
-      - db
-      - redis
-    ports:
-      - "8000:8000"
-    volumes:
-      - .:/code
-
-  worker:
-    restart: unless-stopped
-    build: .
-    command: celery -A app.workers.celery_app.celery worker --loglevel=INFO
-    env_file:
-      - .env
-    depends_on:
-      - db
-      - redis
-    volumes:
-      - .:/code
-
-volumes:
->>>>>>> 21599b0b39eba37876fc43d9838497fbe2974000
   coreops_db:
