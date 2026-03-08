@@ -28,7 +28,29 @@
         <td>{{ monitor.next_run_at }}</td>
         <td>{{ monitor.consecutive_failures }}</td>
         <td>
-          <a class="table-link" href="/dashboard/monitors/{{ monitor.id }}">Ver detalhes</a>
+          <div class="action-buttons">
+            <a class="table-link" href="/dashboard/monitors/{{ monitor.id }}">Ver detalhes</a>
+
+            <form method="post" action="/dashboard/monitors/{{ monitor.id }}/toggle" class="inline-form">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+              {% if monitor.enabled %}
+              <button type="submit" class="icon-button pause-button" title="Pausar monitor">❚❚</button>
+              {% else %}
+              <button type="submit" class="icon-button play-button" title="Ativar monitor">▶</button>
+              {% endif %}
+            </form>
+
+            <form method="post" action="/dashboard/monitors/{{ monitor.id }}/delete" class="inline-form">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+              <button
+                type="submit"
+                class="icon-button delete-button"
+                title="Deletar monitor"
+                onclick="return confirm('Tem certeza que deseja deletar este monitor?')">
+                🗑
+              </button>
+            </form>
+          </div>
         </td>
       </tr>
       {% else %}

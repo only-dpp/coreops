@@ -16,8 +16,12 @@
       </div>
       <div class="header-actions">
         <span class="live-indicator">Atualiza a cada 10s</span>
+        <span class="user-chip">{{ current_user_email }}</span>
         <a class="ghost-button" href="/dashboard/monitors/new">New monitor</a>
-        <a class="ghost-button" href="/docs">API Docs</a>
+        <form method="post" action="/logout" class="inline-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+          <button type="submit" class="ghost-button">Logout</button>
+        </form>
       </div>
     </header>
 

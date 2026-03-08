@@ -9,6 +9,8 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
 from app.db.models import Job, Run
+from app.core.security import get_csrf_token, verify_csrf
+from app.web.routes.auth import require_login
 
 router = APIRouter(tags=["dashboard"])
 templates = Jinja2Templates(directory="app/templates")
@@ -101,27 +103,34 @@ def build_monitor_detail_data(job: Job, runs: list[Run]):
     return monitor, runs_data
 
 
+def base_ctx(request: Request):
+    return {
+        "request": request,
+        "csrf_token": get_csrf_token(request),
+        "current_user_email": request.session.get("user_email"),
+    }
+
+
 @router.get("/dashboard")
 def dashboard_page(request: Request, db: Session = Depends(get_db)):
+    auth_redirect = require_login(request)
+    if auth_redirect:
+        return auth_redirect
+
     counts, monitors = build_dashboard_data(db)
-    return templates.TemplateResponse(
-        "dashboard.html",
-        {
-            "request": request,
-            "counts": counts,
-            "monitors": monitors,
-        },
-    )
+    ctx = base_ctx(request)
+    ctx.update({"counts": counts, "monitors": monitors})
+    return templates.TemplateResponse("dashboard.html", ctx)
 
 
 @router.get("/dashboard/monitors/new")
 def monitor_new_page(request: Request):
-    return templates.TemplateResponse(
-        "monitor_form.html",
-        {
-            "request": request,
-        },
-    )
+    auth_redirect = require_login(request)
+    if auth_redirect:
+        return auth_redirect
+
+    ctx = base_ctx(request)
+    return templates.TemplateResponse("monitor_form.html", ctx)
 
 
 @router.post("/dashboard/monitors/new")
@@ -135,9 +144,19 @@ def monitor_create_from_dashboard(
     alert_channel: str = Form(...),
     alert_target: str = Form(...),
     enabled: bool = Form(False),
+    csrf_token: str = Form(...),
 ):
+    auth_redirect = require_login(request)
+    if auth_redirect:
+        return auth_redirect
+
+    verify_csrf(request, csrf_token)
+
+    if alert_channel not in {"discord", "email"}:
+        raise HTTPException(status_code=400, detail="Canal inválido")
+
     job = Job(
-        owner_id=1,
+        owner_id=request.session["user_id"],
         name=name,
         type="http_check",
         payload={
@@ -157,32 +176,82 @@ def monitor_create_from_dashboard(
     return RedirectResponse(url="/dashboard", status_code=303)
 
 
+@router.post("/dashboard/monitors/{job_id}/toggle")
+def monitor_toggle(
+    request: Request,
+    job_id: int,
+    db: Session = Depends(get_db),
+    csrf_token: str = Form(...),
+):
+    auth_redirect = require_login(request)
+    if auth_redirect:
+        return auth_redirect
+
+    verify_csrf(request, csrf_token)
+
+    job = db.get(Job, job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Monitor not found")
+
+    job.enabled = not job.enabled
+    db.commit()
+
+    return RedirectResponse(url="/dashboard", status_code=303)
+
+
+@router.post("/dashboard/monitors/{job_id}/delete")
+def monitor_delete(
+    request: Request,
+    job_id: int,
+    db: Session = Depends(get_db),
+    csrf_token: str = Form(...),
+):
+    auth_redirect = require_login(request)
+    if auth_redirect:
+        return auth_redirect
+
+    verify_csrf(request, csrf_token)
+
+    job = db.get(Job, job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Monitor not found")
+
+    db.delete(job)
+    db.commit()
+
+    return RedirectResponse(url="/dashboard", status_code=303)
+
+
 @router.get("/dashboard/partials/summary-cards")
 def dashboard_summary_cards(request: Request, db: Session = Depends(get_db)):
+    auth_redirect = require_login(request)
+    if auth_redirect:
+        return auth_redirect
+
     counts, _ = build_dashboard_data(db)
-    return templates.TemplateResponse(
-        "partials/_summary_cards.html",
-        {
-            "request": request,
-            "counts": counts,
-        },
-    )
+    ctx = base_ctx(request)
+    ctx.update({"counts": counts})
+    return templates.TemplateResponse("partials/_summary_cards.html", ctx)
 
 
 @router.get("/dashboard/partials/monitors-table")
 def dashboard_monitors_table(request: Request, db: Session = Depends(get_db)):
+    auth_redirect = require_login(request)
+    if auth_redirect:
+        return auth_redirect
+
     _, monitors = build_dashboard_data(db)
-    return templates.TemplateResponse(
-        "partials/_monitors_table.html",
-        {
-            "request": request,
-            "monitors": monitors,
-        },
-    )
+    ctx = base_ctx(request)
+    ctx.update({"monitors": monitors})
+    return templates.TemplateResponse("partials/_monitors_table.html", ctx)
 
 
 @router.get("/dashboard/monitors/{job_id}")
 def monitor_detail_page(request: Request, job_id: int, db: Session = Depends(get_db)):
+    auth_redirect = require_login(request)
+    if auth_redirect:
+        return auth_redirect
+
     job = db.get(Job, job_id)
     if not job:
         raise HTTPException(status_code=404, detail="Monitor not found")
@@ -196,18 +265,17 @@ def monitor_detail_page(request: Request, job_id: int, db: Session = Depends(get
 
     monitor, runs_data = build_monitor_detail_data(job, runs)
 
-    return templates.TemplateResponse(
-        "monitor_detail.html",
-        {
-            "request": request,
-            "monitor": monitor,
-            "runs": runs_data,
-        },
-    )
+    ctx = base_ctx(request)
+    ctx.update({"monitor": monitor, "runs": runs_data})
+    return templates.TemplateResponse("monitor_detail.html", ctx)
 
 
 @router.get("/dashboard/partials/monitor/{job_id}/status")
 def monitor_status_partial(request: Request, job_id: int, db: Session = Depends(get_db)):
+    auth_redirect = require_login(request)
+    if auth_redirect:
+        return auth_redirect
+
     job = db.get(Job, job_id)
     if not job:
         raise HTTPException(status_code=404, detail="Monitor not found")
@@ -221,17 +289,17 @@ def monitor_status_partial(request: Request, job_id: int, db: Session = Depends(
 
     monitor, _ = build_monitor_detail_data(job, runs)
 
-    return templates.TemplateResponse(
-        "partials/_monitor_status.html",
-        {
-            "request": request,
-            "monitor": monitor,
-        },
-    )
+    ctx = base_ctx(request)
+    ctx.update({"monitor": monitor})
+    return templates.TemplateResponse("partials/_monitor_status.html", ctx)
 
 
 @router.get("/dashboard/partials/monitor/{job_id}/runs")
 def monitor_runs_partial(request: Request, job_id: int, db: Session = Depends(get_db)):
+    auth_redirect = require_login(request)
+    if auth_redirect:
+        return auth_redirect
+
     job = db.get(Job, job_id)
     if not job:
         raise HTTPException(status_code=404, detail="Monitor not found")
@@ -245,10 +313,6 @@ def monitor_runs_partial(request: Request, job_id: int, db: Session = Depends(ge
 
     _, runs_data = build_monitor_detail_data(job, runs)
 
-    return templates.TemplateResponse(
-        "partials/_monitor_runs.html",
-        {
-            "request": request,
-            "runs": runs_data,
-        },
-    )
+    ctx = base_ctx(request)
+    ctx.update({"runs": runs_data})
+    return templates.TemplateResponse("partials/_monitor_runs.html", ctx)

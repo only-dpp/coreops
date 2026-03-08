@@ -23,5 +23,12 @@ class Settings(BaseSettings):
     SMTP_PASS: str
     SMTP_FROM: str
 
+    SESSION_SECRET: str
+    SESSION_HTTPS_ONLY: bool = False
+    SESSION_MAX_AGE_SECONDS: int = 60 * 60 * 8
+
+    ADMIN_EMAIL: str
+    ADMIN_PASSWORD: str
+
 
 settings = Settings()
