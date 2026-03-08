@@ -7,3 +7,4 @@ __pycache__/
 celerybeat-schedule
 *.sqlite3
 *egg-info/
+celerybeat-schedule
