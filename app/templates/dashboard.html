@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CoreOps Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+</head>
+<body>
+  <div class="container">
+    <header class="page-header">
+      <div>
+        <h1>CoreOps</h1>
+        <p>Monitoramento de disponibilidade</p>
+      </div>
+      <div class="header-actions">
+        <span class="live-indicator">Atualiza a cada 10s</span>
+        <a class="ghost-button" href="/dashboard/monitors/new">New monitor</a>
+        <a class="ghost-button" href="/docs">API Docs</a>
+      </div>
+    </header>
+
+    <section
+      id="summary-cards"
+      hx-get="/dashboard/partials/summary-cards"
+      hx-trigger="load, every 10s"
+      hx-swap="innerHTML">
+      {% include "partials/_summary_cards.html" %}
+    </section>
+
+    <section class="table-card">
+      <div class="table-header">
+        <h2>Monitores</h2>
+      </div>
+
+      <div
+        id="monitors-table"
+        hx-get="/dashboard/partials/monitors-table"
+        hx-trigger="load, every 10s"
+        hx-swap="innerHTML">
+        {% include "partials/_monitors_table.html" %}
+      </div>
+    </section>
+  </div>
+</body>
+</html>

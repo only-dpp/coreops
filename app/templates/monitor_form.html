@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Novo monitor - CoreOps</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="page-header">
+      <div>
+        <h1>Novo monitor</h1>
+        <p>Crie um monitor sem precisar usar a documentação da API</p>
+      </div>
+      <div class="header-actions">
+        <a class="ghost-button" href="/dashboard">Voltar</a>
+      </div>
+    </header>
+
+    <section class="form-card">
+      <form method="post" action="/dashboard/monitors/new" class="monitor-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="name">Nome do monitor</label>
+            <input id="name" name="name" type="text" placeholder="Ex: Site principal" required />
+          </div>
+
+          <div class="form-group">
+            <label for="url">URL</label>
+            <input id="url" name="url" type="url" placeholder="https://exemplo.com" required />
+          </div>
+
+          <div class="form-group">
+            <label for="expected_status">Status esperado</label>
+            <input id="expected_status" name="expected_status" type="number" value="200" min="100" max="599" required />
+          </div>
+
+          <div class="form-group">
+            <label for="interval_seconds">Intervalo (segundos)</label>
+            <input id="interval_seconds" name="interval_seconds" type="number" value="60" min="10" required />
+          </div>
+
+          <div class="form-group">
+            <label for="alert_channel">Canal de alerta</label>
+            <select id="alert_channel" name="alert_channel" required>
+              <option value="discord">Discord webhook</option>
+              <option value="email">Email</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="alert_target" id="alert_target_label">Webhook URL</label>
+            <input id="alert_target" name="alert_target" type="text" placeholder="https://discord.com/api/webhooks/..." required />
+          </div>
+        </div>
+
+        <label class="checkbox-row">
+          <input type="checkbox" name="enabled" value="true" checked />
+          <span>Ativar monitor imediatamente</span>
+        </label>
+
+        <div class="form-actions">
+          <button class="primary-button" type="submit">Criar monitor</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <script>
+    const channelSelect = document.getElementById("alert_channel");
+    const targetLabel = document.getElementById("alert_target_label");
+    const targetInput = document.getElementById("alert_target");
+
+    function syncAlertField() {
+      if (channelSelect.value === "email") {
+        targetLabel.textContent = "Email de destino";
+        targetInput.placeholder = "cliente@empresa.com";
+        targetInput.type = "email";
+      } else {
+        targetLabel.textContent = "Webhook URL";
+        targetInput.placeholder = "https://discord.com/api/webhooks/...";
+        targetInput.type = "text";
+      }
+    }
+
+    channelSelect.addEventListener("change", syncAlertField);
+    syncAlertField();
+  </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<section class="detail-grid">
+  <div class="detail-card">
+    <h3>Status atual</h3>
+    <p><span class="status-badge status-{{ monitor.status }}">{{ monitor.status }}</span></p>
+    <p><strong>Intervalo:</strong> {{ monitor.interval_seconds }}s</p>
+    <p><strong>Última checagem:</strong> {{ monitor.last_checked_at }}</p>
+    <p><strong>Próxima execução:</strong> {{ monitor.next_run_at }}</p>
+    <p><strong>Falhas seguidas:</strong> {{ monitor.consecutive_failures }}</p>
+  </div>
+
+  <div class="detail-card">
+    <h3>Último erro</h3>
+    <pre class="error-box">{{ monitor.last_error }}</pre>
+  </div>
+</section>

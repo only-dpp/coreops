@@ -1,44 +1,28 @@
 from logging.config import fileConfig
+import os
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
+from sqlalchemy import engine_from_config, pool
 from alembic import context
+from dotenv import load_dotenv
 
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
+from app.db.base import Base
+from app.db import models  # importa os models para registrar no metadata
+
 config = context.config
 
-# Interpret the config file for Python logging.
-# This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
-
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
-from app.db.base import Base
-from app.db import models  # <-- importa só pra registrar tabelas no metadata
-
-target_metadata = Base.metadata
-
-import os
-from dotenv import load_dotenv
 
 load_dotenv()
 
 db_url = os.getenv("DATABASE_URL")
 if db_url:
     config.set_main_option("sqlalchemy.url", db_url)
-# other values from the config, defined by the needs of env.py,
-# can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
-# ... etc.
+
+target_metadata = Base.metadata
 
 
 def run_migrations_offline() -> None:
-   
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
@@ -52,20 +36,16 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
-
-    config.set_main_option(
-    "sqlalchemy.url",
-    "postgresql+psycopg2://coreops:coreops@localhost:5432/coreops"
-)
     connectable = engine_from_config(
-    config.get_section(config.config_ini_section),
-    prefix="sqlalchemy.",
-    poolclass=pool.NullPool,
-)
+        config.get_section(config.config_ini_section),
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
+    )
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection,
+            target_metadata=target_metadata,
         )
 
         with context.begin_transaction():

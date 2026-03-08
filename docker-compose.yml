@@ -39,5 +39,16 @@ services:
     volumes:
       - .:/code
 
+  beat:
+    build: .
+    command: celery -A app.worker.celery:celery beat --loglevel=INFO
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/code
+
 volumes:
   coreops_db:

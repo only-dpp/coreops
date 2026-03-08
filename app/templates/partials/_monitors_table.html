@@ -1,0 +1,41 @@
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Monitor</th>
+        <th>Status</th>
+        <th>URL</th>
+        <th>Última checagem</th>
+        <th>Próxima execução</th>
+        <th>Falhas</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for monitor in monitors %}
+      <tr>
+        <td>
+          <div class="monitor-name">{{ monitor.name }}</div>
+          <div class="monitor-type">{{ monitor.type }}</div>
+        </td>
+        <td>
+          <span class="status-badge status-{{ monitor.status }}">
+            {{ monitor.status }}
+          </span>
+        </td>
+        <td class="url-cell">{{ monitor.url }}</td>
+        <td>{{ monitor.last_checked_at }}</td>
+        <td>{{ monitor.next_run_at }}</td>
+        <td>{{ monitor.consecutive_failures }}</td>
+        <td>
+          <a class="table-link" href="/dashboard/monitors/{{ monitor.id }}">Ver detalhes</a>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="7">Nenhum monitor encontrado.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

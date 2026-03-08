@@ -1,0 +1,32 @@
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Status</th>
+        <th>Started</th>
+        <th>Finished</th>
+        <th>Error</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for run in runs %}
+      <tr>
+        <td>{{ run.id }}</td>
+        <td>
+          <span class="status-badge status-{{ run.status }}">
+            {{ run.status }}
+          </span>
+        </td>
+        <td>{{ run.started_at }}</td>
+        <td>{{ run.finished_at }}</td>
+        <td class="error-cell">{{ run.error }}</td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="5">Nenhum run encontrado.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

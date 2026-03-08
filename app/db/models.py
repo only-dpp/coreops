@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import DateTime, ForeignKey, String, Text, func
+from sqlalchemy import DateTime, ForeignKey, String, Text, func, Boolean, Integer
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -22,7 +22,7 @@ class User(Base):
         nullable=False,
     )
 
-    jobs: Mapped[list[Job]] = relationship(
+    jobs: Mapped[list["Job"]] = relationship(
         back_populates="owner",
         cascade="all, delete-orphan",
     )
@@ -33,17 +33,32 @@ class Job(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+
     name: Mapped[str] = mapped_column(String(120))
-    type: Mapped[str] = mapped_column(String(50))  # http_check, page_snapshot, keyword_watch
+    type: Mapped[str] = mapped_column(String(50))
     payload: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
         nullable=False,
     )
 
-    owner: Mapped[User] = relationship(back_populates="jobs")
-    runs: Mapped[list[Run]] = relationship(
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    interval_seconds: Mapped[int] = mapped_column(Integer, default=60, nullable=False)
+    next_run_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    alert_channel: Mapped[str] = mapped_column(String(20), default="discord", nullable=False)
+    alert_target: Mapped[str | None] = mapped_column(String(500), nullable=True)
+
+    last_status: Mapped[str | None] = mapped_column(String(30), nullable=True)
+    last_checked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_error: Mapped[str | None] = mapped_column(Text, nullable=True)
+    last_output: Mapped[dict[str, Any] | None] = mapped_column(JSONB, nullable=True)
+    consecutive_failures: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+
+    owner: Mapped["User"] = relationship(back_populates="jobs")
+    runs: Mapped[list["Run"]] = relationship(
         back_populates="job",
         cascade="all, delete-orphan",
     )
@@ -54,7 +69,7 @@ class Run(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     job_id: Mapped[int] = mapped_column(ForeignKey("jobs.id"), index=True)
-    status: Mapped[str] = mapped_column(String(30), default="queued")  # queued/running/success/failed
+    status: Mapped[str] = mapped_column(String(30), default="queued")
 
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
@@ -62,4 +77,4 @@ class Run(Base):
     output: Mapped[dict[str, Any] | None] = mapped_column(JSONB, nullable=True)
     error: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    job: Mapped[Job] = relationship(back_populates="runs")
+    job: Mapped["Job"] = relationship(back_populates="runs")

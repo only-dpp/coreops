@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ monitor.name }} - CoreOps</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+</head>
+<body>
+  <div class="container">
+    <header class="page-header">
+      <div>
+        <h1>{{ monitor.name }}</h1>
+        <p>{{ monitor.url }}</p>
+      </div>
+      <div class="header-actions">
+        <span class="live-indicator">Atualiza a cada 10s</span>
+        <a class="ghost-button" href="/dashboard">Voltar</a>
+      </div>
+    </header>
+
+    <div
+      id="monitor-status"
+      hx-get="/dashboard/partials/monitor/{{ monitor.id }}/status"
+      hx-trigger="load, every 10s"
+      hx-swap="innerHTML">
+      {% include "partials/_monitor_status.html" %}
+    </div>
+
+    <section class="table-card">
+      <div class="table-header">
+        <h2>Últimos runs</h2>
+      </div>
+
+      <div
+        id="monitor-runs"
+        hx-get="/dashboard/partials/monitor/{{ monitor.id }}/runs"
+        hx-trigger="load, every 10s"
+        hx-swap="innerHTML">
+        {% include "partials/_monitor_runs.html" %}
+      </div>
+    </section>
+  </div>
+</body>
+</html>
