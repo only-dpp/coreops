@@ -31,4 +31,4 @@ Thumbs.db
 
 docker-compose.override.yml
 
-/alembic/versions/*.py
+alembic/
