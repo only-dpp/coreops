@@ -101,11 +101,7 @@ cd coreops
 ```bash
 cp .env.example .env
 ```
-
-
-
-
-
+Edite o `.env`
 
 
 
