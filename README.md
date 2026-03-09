@@ -25,3 +25,11 @@ O projeto inclui um dashboard web simples para gerenciar monitores, visualizar h
 ##Screenshots
 
 <img width="1898" height="911" alt="image" src="https://github.com/user-attachments/assets/e6108833-9998-48fe-8d1c-275ab0934410" />
+
+<img width="1904" height="908" alt="image" src="https://github.com/user-attachments/assets/b2d251c9-0770-4f38-b5d7-b523db6ae46a" />
+
+<img width="1907" height="907" alt="image" src="https://github.com/user-attachments/assets/c169adb8-46f8-4278-a278-1582c3b3064c" />
+
+<img width="1801" height="832" alt="image" src="https://github.com/user-attachments/assets/20ec26ca-6bd9-436d-af5c-3277191c4c06" />
+
+
