@@ -50,7 +50,7 @@ O projeto inclui um dashboard web simples para gerenciar monitores, visualizar h
 - Alembic
 - Celery
 - Redis
-- PostgresSQL
+- PostgreSQL
 
 **Frontend**
 - Jinja2 template
@@ -89,7 +89,7 @@ Redis (broker)
 **Redis**
 - Broker de mensagens para Celery
 
-**PostgresSQL**
+**postgreSQL**
 - Armazena monitores
 - Armazena histórico de execuções
 
@@ -129,7 +129,7 @@ Isso iniciará:
 - WORKER
 - Beat Scheduler
 - Redis
-- PostgresSQL
+- postgreSQL
 
 ### 4. Rode as migrações
 
@@ -209,6 +209,7 @@ Este projeto inclui camadas básicas de segurança:
 ### License
 
 MIT License
+
 
 
 
