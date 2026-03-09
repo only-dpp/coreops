@@ -122,8 +122,7 @@ Campos importantes:
 
 ### 3. Suba os serviços
 
-```
-bash
+```bash
 docker compose up -d --build
 ```
 
@@ -136,16 +135,14 @@ Isso iniciará:
 
 ### 4. Rode as migrações
 
-```
-bash
+```bash
 docker compose exec api alembic upgrade head
 ```
 
 ### 5. Acesse o dashboard
 
 Abra:
-```
-bash
+```bash
 http://localhost:8000/login
 ```
 Login com as credenciais definidas em `.env`
@@ -168,8 +165,7 @@ O monitor começará a rodar automaticamente.
 ### Discord
 
 Informe a URL do webhook:
-```
-bash
+```bash
 https://discord.com/api/webhook/...
 ```
 
@@ -177,8 +173,7 @@ https://discord.com/api/webhook/...
 
 Configure o **SMTP** no `.env`
 
-```
-bash
+```bash
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
@@ -187,8 +182,7 @@ SMTP_PASS=your-app-password
 
 ## Project Structure
 
-```
-bash
+```bash
 coreops
 │
 ├── app
@@ -217,6 +211,7 @@ Este projeto inclui camadas básicas de segurança:
 ### License
 
 MIT License
+
 
 
 
