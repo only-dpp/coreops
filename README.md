@@ -101,7 +101,15 @@ cd coreops
 ```bash
 cp .env.example .env
 ```
-Edite o `.env`
+
+Edite o `.env` e configure seus valores.
+
+Campos importantes:
+- `SMTP_USER`
+- `SMTP_PASS`
+- `ADMIN_EMAIL`
+- `ADMIN_PASSWORD`
+
 
 
 
