@@ -100,7 +100,7 @@ Redis (broker)
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/only-dpp/coresops.git
+git clone https://github.com/only-dpp/coreops.git
 cd coreops
 ```
 
@@ -209,6 +209,7 @@ Este projeto inclui camadas básicas de segurança:
 ### License
 
 MIT License
+
 
 
 
