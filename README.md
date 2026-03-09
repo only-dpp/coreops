@@ -1,5 +1,15 @@
 # CoreOps
 
+# CoreOps
+
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115.0-009688?logo=fastapi)
+![Celery](https://img.shields.io/badge/Celery-5.6.2-green?logo=celery)
+![Redis](https://img.shields.io/badge/Redis-7.3.0-red?logo=redis)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue?logo=postgresql)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker)
+![Python](https://img.shields.io/badge/Python-3.11-yellow?logo=python)
+
+
 CoreOps é um sistema leve de monitoramente de uptime construido com **FastSPI**, **Celery**, **Redis** e **PostgresSQL**.
 
 O projeto inclui um dashboard web simples para gerenciar monitores, visualizar histórico de execuções e controlar o comportamento dos alertas
@@ -207,6 +217,7 @@ Este projeto inclui camadas básicas de segurança:
 ### License
 
 MIT License
+
 
 
 
