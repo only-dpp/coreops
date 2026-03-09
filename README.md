@@ -195,3 +195,18 @@ coreops
 └── .env.example
 ```
 
+## Security Notes
+
+Este projeto inclui camadas básicas de segurança:
+- Autenticação baseada em sessão
+- Hashing de senhas
+- Proteção CSRF
+- Configuração via variáveis de ambiente
+
+
+### License
+
+MIT License
+
+
+
