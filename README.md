@@ -1,7 +1,5 @@
 # CoreOps
 
-# CoreOps
-
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.115.0-009688?logo=fastapi)
 ![Celery](https://img.shields.io/badge/Celery-5.6.2-green?logo=celery)
 ![Redis](https://img.shields.io/badge/Redis-7.3.0-red?logo=redis)
@@ -211,6 +209,7 @@ Este projeto inclui camadas básicas de segurança:
 ### License
 
 MIT License
+
 
 
 
