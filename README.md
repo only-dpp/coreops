@@ -110,6 +110,88 @@ Campos importantes:
 - `ADMIN_EMAIL`
 - `ADMIN_PASSWORD`
 
+### 3. Suba os serviços
 
+```
+bash
+docker compose up -d --build
+```
 
+Isso iniciará:
+- API
+- WORKER
+- Beat Scheduler
+- Redis
+- PostgresSQL
+
+### 4. Rode as migrações
+
+```
+bash
+docker compose exec api alembic upgrade head
+```
+
+### 5. Acesse o dashboard
+
+Abra:
+```
+bash
+http://localhost:8000/login
+```
+Login com as credenciais definidas em `.env`
+
+## Criando um Monitor
+
+No dashboard 
+1. Clique em **New Monitor**
+2. Informe:
+   - Nome
+   - URL
+   - Intervalo
+   - Canal de alerta
+3. Salve
+
+O monitor começará a rodar automaticamente.
+
+## alert Channels
+
+### Discord
+
+Informe a URL do webhook:
+```
+bash
+https://discord.com/api/webhook/...
+```
+
+### Email
+
+Configure o **SMTP** no `.env`
+
+```
+bash
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+```
+
+## Project Structure
+
+```
+bash
+coreops
+│
+├── app
+│ ├── api
+│ ├── core
+│ ├── db
+│ ├── templates
+│ ├── static
+│ └── web
+│
+├── docker-compose.yml
+├── pyproject.toml
+├── alembic.ini
+└── .env.example
+```
 
