@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
 from app.db.models import User
-from app.core.security import verify_password, get_csrf_token, verify_csrf
+from app.core.security import verify_password, get_csrf_token, verify_csrf, secrets
 
 from fastapi import Request
 from fastapi.responses import RedirectResponse
@@ -88,7 +88,7 @@ def login_submit(
     request.session.clear()
     request.session["user_id"] = user.id
     request.session["user_email"] = user.email
-    request.session["csrf_token"] = get_csrf_token(request)
+    request.session["csrf_token"] = secrets.token_urlsafe(32)
 
     return RedirectResponse(url="/dashboard", status_code=303)
 
