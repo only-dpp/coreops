@@ -8,7 +8,7 @@
 ![Python](https://img.shields.io/badge/Python-3.11-yellow?logo=python)
 
 
-CoreOps é um sistema leve de monitoramente de uptime construido com **FastAPI**, **Celery**, **Redis** e **PostgresQL**.
+CoreOps é um sistema leve de monitoramento de uptime construido com **FastAPI**, **Celery**, **Redis** e **PostgresQL**.
 
 O projeto inclui um dashboard web simples para gerenciar monitores, visualizar histórico de execuções e controlar o comportamento dos alertas
 
