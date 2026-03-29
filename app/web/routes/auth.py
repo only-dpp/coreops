@@ -52,8 +52,9 @@ def login_submit(
         lock_dt = datetime.fromisoformat(locked_until)
         if lock_dt > datetime.now(timezone.utc):
             return templates.TemplateResponse(
-                "login.html",
-                {
+                request=request,
+                name="login.html",
+                context={
                     "request": request,
                     "csrf_token": get_csrf_token(request),
                     "error": "Muitas tentativas. Aguarde alguns minutos.",
@@ -77,8 +78,9 @@ def login_submit(
             ).isoformat()
 
         return templates.TemplateResponse(
-            "login.html",
-            {
+            request=request,
+            name="login.html",
+            context={
                 "request": request,
                 "csrf_token": get_csrf_token(request),
                 "error": "Credenciais inválidas.",

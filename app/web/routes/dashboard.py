@@ -133,7 +133,6 @@ def monitor_new_page(request: Request):
         return auth_redirect
 
     ctx = base_ctx(request)
-    ctx = base_ctx(request)
     return templates.TemplateResponse(
         request=request,
         name="monitor_form.html",
@@ -240,10 +239,9 @@ def dashboard_summary_cards(request: Request, db: Session = Depends(get_db)):
     counts, _ = build_dashboard_data(db)
     ctx = base_ctx(request)
     ctx.update({"counts": counts})
-    ctx = base_ctx(request)
     return templates.TemplateResponse(
         request=request,
-        name="partials/_summary_card.html",
+        name="partials/_summary_cards.html",
         context=ctx,
     )
 
@@ -260,7 +258,7 @@ def dashboard_monitors_table(request: Request, db: Session = Depends(get_db)):
     ctx.update({"monitors": monitors})
     return templates.TemplateResponse(
         request=request,
-        name="partials/_summary_table.html",
+        name="partials/_monitors_table.html",
         context=ctx,
     )
 
