@@ -27,8 +27,9 @@ def login_page(request: Request):
         return RedirectResponse(url="/dashboard", status_code=303)
 
     return templates.TemplateResponse(
-        "login.html",
-        {
+        request=request,
+        name="login.html",
+        context={
             "request": request,
             "csrf_token": get_csrf_token(request),
             "error": None,

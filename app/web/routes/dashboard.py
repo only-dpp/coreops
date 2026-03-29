@@ -120,9 +120,12 @@ def dashboard_page(request: Request, db: Session = Depends(get_db)):
     counts, monitors = build_dashboard_data(db)
     ctx = base_ctx(request)
     ctx.update({"counts": counts, "monitors": monitors})
-    return templates.TemplateResponse("dashboard.html", ctx)
 
-
+    return templates.TemplateResponse(
+        request=request,
+        name="dashboard.html",
+        context=ctx,
+    )
 @router.get("/dashboard/monitors/new")
 def monitor_new_page(request: Request):
     auth_redirect = require_login(request)
@@ -130,7 +133,13 @@ def monitor_new_page(request: Request):
         return auth_redirect
 
     ctx = base_ctx(request)
-    return templates.TemplateResponse("monitor_form.html", ctx)
+    ctx = base_ctx(request)
+    return templates.TemplateResponse(
+        request=request,
+        name="monitor_form.html",
+        context=ctx,
+    )
+
 
 
 @router.post("/dashboard/monitors/new")
@@ -231,7 +240,13 @@ def dashboard_summary_cards(request: Request, db: Session = Depends(get_db)):
     counts, _ = build_dashboard_data(db)
     ctx = base_ctx(request)
     ctx.update({"counts": counts})
-    return templates.TemplateResponse("partials/_summary_cards.html", ctx)
+    ctx = base_ctx(request)
+    return templates.TemplateResponse(
+        request=request,
+        name="partials/_summary_card.html",
+        context=ctx,
+    )
+
 
 
 @router.get("/dashboard/partials/monitors-table")
@@ -243,7 +258,11 @@ def dashboard_monitors_table(request: Request, db: Session = Depends(get_db)):
     _, monitors = build_dashboard_data(db)
     ctx = base_ctx(request)
     ctx.update({"monitors": monitors})
-    return templates.TemplateResponse("partials/_monitors_table.html", ctx)
+    return templates.TemplateResponse(
+        request=request,
+        name="partials/_summary_table.html",
+        context=ctx,
+    )
 
 
 @router.get("/dashboard/monitors/{job_id}")
@@ -267,7 +286,11 @@ def monitor_detail_page(request: Request, job_id: int, db: Session = Depends(get
 
     ctx = base_ctx(request)
     ctx.update({"monitor": monitor, "runs": runs_data})
-    return templates.TemplateResponse("monitor_detail.html", ctx)
+    return templates.TemplateResponse(
+        request=request,
+        name="monitor_detail.html",
+        context=ctx,
+    )
 
 
 @router.get("/dashboard/partials/monitor/{job_id}/status")
@@ -291,7 +314,11 @@ def monitor_status_partial(request: Request, job_id: int, db: Session = Depends(
 
     ctx = base_ctx(request)
     ctx.update({"monitor": monitor})
-    return templates.TemplateResponse("partials/_monitor_status.html", ctx)
+    return templates.TemplateResponse(
+        request=request,
+        name="partials/_monitor_status.html",
+        context=ctx,
+    )
 
 
 @router.get("/dashboard/partials/monitor/{job_id}/runs")
@@ -315,4 +342,8 @@ def monitor_runs_partial(request: Request, job_id: int, db: Session = Depends(ge
 
     ctx = base_ctx(request)
     ctx.update({"runs": runs_data})
-    return templates.TemplateResponse("partials/_monitor_runs.html", ctx)
+    return templates.TemplateResponse(
+        request=request,
+        name="partials/_monitor_runs.html",
+        context=ctx,
+    )
